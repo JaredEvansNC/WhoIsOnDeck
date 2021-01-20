@@ -1,0 +1,17 @@
+﻿<Window x:Class="WhoIsOnDeck.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WhoIsOnDeck"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="250" Width="400">
+	<Grid>
+		<Label Content="Who is on deck?" HorizontalAlignment="Center" Margin="0,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" Width="400" HorizontalContentAlignment="Center" FontSize="16" FontWeight="ExtraBold"/>
+		<Button Content="NEW SET" HorizontalAlignment="Center" Margin="0,0,0,25" VerticalAlignment="Bottom" Click="NewSetButtonMouseDown"/>
+		<TextBlock Name="ErrorBlock" HorizontalAlignment="Center" Margin="0,0,0,0" Text="" TextWrapping="Wrap" VerticalAlignment="Center" TextAlignment="Center" Foreground="Red" Width="350"/>
+		<TextBlock Name="StudentOne" Text=""  TextAlignment="Center" HorizontalAlignment="Left" Margin="0,60,0,0" VerticalAlignment="Top" Width="200" Height="30" TextWrapping="Wrap" MouseDown="StudentNameMouseDown" FontWeight="Bold"/>
+		<TextBlock Name="StudentTwo" Text=""  TextAlignment="Center" HorizontalAlignment="Left" Margin="200,60,0,0" VerticalAlignment="Top" Width="200" Height="30" TextWrapping="Wrap" MouseDown="StudentNameMouseDown" FontWeight="Bold"/>
+		<TextBlock Name="StudentThree" Text=""  TextAlignment="Center" HorizontalAlignment="Left" Margin="100,90,0,0" VerticalAlignment="Top" Width="200" Height="30" TextWrapping="Wrap" MouseDown="StudentNameMouseDown" FontWeight="Bold"/>
+	</Grid>
+</Window>
