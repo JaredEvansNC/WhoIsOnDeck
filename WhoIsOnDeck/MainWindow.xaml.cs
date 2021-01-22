@@ -9,6 +9,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -21,7 +22,9 @@ namespace WhoIsOnDeck
 	/// </summary>
 	public partial class MainWindow : Window
 	{
-		public StudentSorter Sorter;
+		private StudentSorter Sorter;
+
+		private Storyboard storyboard = new Storyboard();
 
 		public MainWindow()
 		{
@@ -44,18 +47,35 @@ namespace WhoIsOnDeck
 		private void StudentNameMouseDown(object sender, MouseButtonEventArgs e)
 		{
 			// Don't do this if there's no sorter
-			if (Sorter != null) { 
+			if (Sorter != null) {
 
-				string textBlockName = ((TextBlock)sender).Text;
+				TextBlock tb = (TextBlock)sender;
+
+				// Get the name from this button
+				string textBlockName = tb.Text;
 
 				// If there's a name here, mark it as used
 				if (!textBlockName.Equals("")) {
 					Sorter.MarkNameAsUsed(textBlockName);
 				}
 
+				// Animate the student's name
+				var nameAnim = new DoubleAnimation();
+				nameAnim.From = 12.0;
+				nameAnim.To = 18.0;
+				nameAnim.Duration = new Duration(TimeSpan.FromSeconds(1));
+				nameAnim.AutoReverse = true;
+
+				storyboard.Children.Add(nameAnim);
+				Storyboard.SetTargetName(nameAnim, tb.Name);
+				Storyboard.SetTargetProperty(nameAnim, new PropertyPath(TextBlock.FontSizeProperty));
+
+				storyboard.Begin(this);
+
 				// Get a new set of students
 				GetNewStudentsOnDeck();
 			}
+			// TO-DO - show error about missing sorter
 		}
 
 		// Retrieves a new set of students from the sorter and displays their names on screen
@@ -75,6 +95,7 @@ namespace WhoIsOnDeck
 			{
 				GetNewStudentsOnDeck();
 			}
+			// TO-DO - show error about missing sorter
 		}
 	}
 }

@@ -57,7 +57,7 @@ namespace WhoIsOnDeck
 				UnusedStudents.AddRange(UsedStudents);
 				UsedStudents.Clear();
 
-				// If there are still no unused students
+				// If there are still no unused students, grab them from the students who were just on screen
 				if (UnusedStudents.Count <= 0)
 				{
 					UnusedStudents.AddRange(PrevOnDeckStudents);
