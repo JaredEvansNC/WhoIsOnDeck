@@ -41,13 +41,17 @@ namespace WhoIsOnDeck
 									"Make sure there is a classnames.txt file in the same directory as the .exe, with names separated by commas.\n\n" +
 									"ERROR: " + e.Message;
 			}
+
+			// Begin the storyboard with no children
+			storyboard.Begin(this, true);
 		}
 
 		// If a student's name is click, mark them off as having answered, and get a new set of students
 		private void StudentNameMouseDown(object sender, MouseButtonEventArgs e)
 		{
-			// Don't do this if there's no sorter
-			if (Sorter != null) {
+
+			// Don't do this if there's no sorter OR if there's an animation playing
+			if (CanInteractWithScreen()) {
 
 				TextBlock tb = (TextBlock)sender;
 
@@ -60,22 +64,28 @@ namespace WhoIsOnDeck
 				}
 
 				// Animate the student's name
-				var nameAnim = new DoubleAnimation();
+				storyboard.Children.Clear();	// clear any previous anims
+
+				var nameAnim = new DoubleAnimation();	// setup the new animation
 				nameAnim.From = 12.0;
 				nameAnim.To = 18.0;
-				nameAnim.Duration = new Duration(TimeSpan.FromSeconds(1));
+				nameAnim.Duration = new Duration(TimeSpan.FromSeconds(0.5));
 				nameAnim.AutoReverse = true;
+				nameAnim.Completed += (s, e) =>
+				{
+					// Get a new set of students on anim completion
+					GetNewStudentsOnDeck();
+				};
 
+				// Add to storyboard
 				storyboard.Children.Add(nameAnim);
 				Storyboard.SetTargetName(nameAnim, tb.Name);
 				Storyboard.SetTargetProperty(nameAnim, new PropertyPath(TextBlock.FontSizeProperty));
 
-				storyboard.Begin(this);
+				// Start storyboard
+				storyboard.Begin(this, true);
 
-				// Get a new set of students
-				GetNewStudentsOnDeck();
 			}
-			// TO-DO - show error about missing sorter
 		}
 
 		// Retrieves a new set of students from the sorter and displays their names on screen
@@ -91,11 +101,29 @@ namespace WhoIsOnDeck
 		private void NewSetButtonMouseDown(object sender, RoutedEventArgs e)
 		{
 			// Don't do this if there's no sorter
-			if (Sorter != null)
+			if (CanInteractWithScreen())
 			{
 				GetNewStudentsOnDeck();
 			}
-			// TO-DO - show error about missing sorter
+		}
+
+		private bool CanInteractWithScreen()
+		{
+			// If there is no valid sorter object, don't allow interaction
+			if(Sorter == null)
+			{
+				return false;
+			}
+
+			// If we're animating, don't allow interactions
+			ClockState check = storyboard.GetCurrentState(this);
+			bool p = storyboard.GetIsPaused(this);
+			if (storyboard.GetCurrentState(this) == ClockState.Active)
+			{
+				return false;
+			}
+
+			return true;
 		}
 	}
 }
