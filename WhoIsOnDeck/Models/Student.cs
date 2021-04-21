@@ -49,6 +49,7 @@ namespace WhoIsOnDeck.Models
 			if(xp >= XpToNextLevel())
 			{
 				level++;
+				xp = 0;
 			}
 		}
 

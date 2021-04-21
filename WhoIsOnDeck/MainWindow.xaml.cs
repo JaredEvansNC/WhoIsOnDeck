@@ -86,24 +86,49 @@ namespace WhoIsOnDeck
 					}
 				}
 
+				// Only do this if we found a student
 				if (name != null)
 				{
 					// Get the name from this button
 					string textBlockName = name.Text;
 
+					// Get the student object
+					Student student = Sorter.FindOnDeckStudentByName(textBlockName);
+
+					// Store current level
+					int oldLevel = student.level;
+
+					// Add xp
+					student.AddOneXP();
+
+					// Update text displays
+					SetLevelDisplay(student, level);
+					SetXPDisplay(student, xp);
+
 					// If there's a name here, mark it as used
 					if (!textBlockName.Equals(""))
 					{
-						Sorter.MarkStudentAsUsed(Sorter.FindOnDeckStudentByName(textBlockName));
+						Sorter.MarkStudentAsUsed(student);
 					}
 
-					// Animate the student's panel
+
+					string tbToAnimate = xp.Name;
+					double startSize = 14.0;
+
+					// If the level has changed animate that instead
+					if (oldLevel != student.level)
+					{
+						tbToAnimate = level.Name;
+						startSize = 16.0;
+					}
+
+					// Animate the correct panel
 					storyboard.Children.Clear();    // clear any previous anims
 
 					var panelAnim = new DoubleAnimation();   // setup the new animation
-					panelAnim.From = 12.0;
-					panelAnim.To = 18.0;
-					panelAnim.Duration = new Duration(TimeSpan.FromSeconds(0.5));
+					panelAnim.From = startSize;
+					panelAnim.To = startSize + 6.0;
+					panelAnim.Duration = new Duration(TimeSpan.FromSeconds(0.75));
 					panelAnim.AutoReverse = true;
 					panelAnim.Completed += (s, e) =>
 					{
@@ -111,9 +136,10 @@ namespace WhoIsOnDeck
 						GetNewStudentsOnDeck();
 					};
 
+
 					// Add to storyboard
 					storyboard.Children.Add(panelAnim);
-					Storyboard.SetTargetName(panelAnim, xp.Name);
+					Storyboard.SetTargetName(panelAnim, tbToAnimate);
 					Storyboard.SetTargetProperty(panelAnim, new PropertyPath(TextBlock.FontSizeProperty));
 
 					// Start storyboard
@@ -139,18 +165,26 @@ namespace WhoIsOnDeck
 			SetImageFromJob(StudentImageTwo, studentsOnDeck[1].job);
 			SetImageFromJob(StudentImageThree, studentsOnDeck[2].job);
 
-			// Set class
-			StudentLevelOne.Text = "Lv " + studentsOnDeck[0].level + " " + CapitalizeFirstLetter(studentsOnDeck[0].job);
-			StudentLevelTwo.Text = "Lv " + studentsOnDeck[1].level + " " + CapitalizeFirstLetter(studentsOnDeck[1].job);
-			StudentLevelThree.Text = "Lv " + studentsOnDeck[2].level + " " + CapitalizeFirstLetter(studentsOnDeck[2].job);
+			// Set job and level
+			SetLevelDisplay(studentsOnDeck[0], StudentLevelOne);
+			SetLevelDisplay(studentsOnDeck[1], StudentLevelTwo);
+			SetLevelDisplay(studentsOnDeck[2], StudentLevelThree);
 
 			// Set xp
-			StudentXPOne.Text = "XP " + studentsOnDeck[0].xp + " / " + studentsOnDeck[0].XpToNextLevel();
-			StudentXPTwo.Text = "XP " + studentsOnDeck[1].xp + " / " + studentsOnDeck[1].XpToNextLevel();
-			StudentXPThree.Text = "XP " + studentsOnDeck[2].xp + " / " + studentsOnDeck[2].XpToNextLevel();
+			SetXPDisplay(studentsOnDeck[0], StudentXPOne);
+			SetXPDisplay(studentsOnDeck[1], StudentXPTwo);
+			SetXPDisplay(studentsOnDeck[2], StudentXPThree);
 		}
 
+		private void SetLevelDisplay(Student s, TextBlock tb)
+		{
+			tb.Text = "Lv " + s.level + " " + CapitalizeFirstLetter(s.job);
+		}
 
+		private void SetXPDisplay(Student s, TextBlock tb)
+		{
+			tb.Text = "XP " + s.xp + " / " + s.XpToNextLevel();
+		}
 		private string CapitalizeFirstLetter(string s)
 		{
 			return char.ToUpper(s[0]) + s.Substring(1);
