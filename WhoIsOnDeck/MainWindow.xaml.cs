@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.IO;
+using WhoIsOnDeck.Models;
 
 namespace WhoIsOnDeck
 {
@@ -53,37 +54,71 @@ namespace WhoIsOnDeck
 			// Don't do this if there's no sorter OR if there's an animation playing
 			if (CanInteractWithScreen()) {
 
-				TextBlock tb = (TextBlock)sender;
+				// Sort through the stack panel's children and find all the objects
+				StackPanel sp = (StackPanel)sender;
 
-				// Get the name from this button
-				string textBlockName = tb.Text;
+				TextBlock name = null;
+				Image image = null;
+				TextBlock level = null;
+				TextBlock xp = null;
 
-				// If there's a name here, mark it as used
-				if (!textBlockName.Equals("")) {
-					Sorter.MarkNameAsUsed(textBlockName);
+				foreach(Object o in sp.Children)
+				{
+					if(o is TextBlock)
+					{
+						TextBlock tempTextBlock = (TextBlock)o;
+						if(tempTextBlock.Name.Contains("Name"))
+						{
+							name = tempTextBlock;
+						}
+						else if(tempTextBlock.Name.Contains("Level"))
+						{
+							level = tempTextBlock;
+						}
+						else if (tempTextBlock.Name.Contains("XP"))
+						{
+							xp = tempTextBlock;
+						}
+					}
+					else if(o is Image)
+					{
+						image = (Image)o;
+					}
 				}
 
-				// Animate the student's name
-				storyboard.Children.Clear();	// clear any previous anims
-
-				var nameAnim = new DoubleAnimation();	// setup the new animation
-				nameAnim.From = 12.0;
-				nameAnim.To = 18.0;
-				nameAnim.Duration = new Duration(TimeSpan.FromSeconds(0.5));
-				nameAnim.AutoReverse = true;
-				nameAnim.Completed += (s, e) =>
+				if (name != null)
 				{
-					// Get a new set of students on anim completion
-					GetNewStudentsOnDeck();
-				};
+					// Get the name from this button
+					string textBlockName = name.Text;
 
-				// Add to storyboard
-				storyboard.Children.Add(nameAnim);
-				Storyboard.SetTargetName(nameAnim, tb.Name);
-				Storyboard.SetTargetProperty(nameAnim, new PropertyPath(TextBlock.FontSizeProperty));
+					// If there's a name here, mark it as used
+					if (!textBlockName.Equals(""))
+					{
+						Sorter.MarkStudentAsUsed(Sorter.FindOnDeckStudentByName(textBlockName));
+					}
 
-				// Start storyboard
-				storyboard.Begin(this, true);
+					// Animate the student's panel
+					storyboard.Children.Clear();    // clear any previous anims
+
+					var panelAnim = new DoubleAnimation();   // setup the new animation
+					panelAnim.From = 12.0;
+					panelAnim.To = 18.0;
+					panelAnim.Duration = new Duration(TimeSpan.FromSeconds(0.5));
+					panelAnim.AutoReverse = true;
+					panelAnim.Completed += (s, e) =>
+					{
+						// Get a new set of students on anim completion
+						GetNewStudentsOnDeck();
+					};
+
+					// Add to storyboard
+					storyboard.Children.Add(panelAnim);
+					Storyboard.SetTargetName(panelAnim, xp.Name);
+					Storyboard.SetTargetProperty(panelAnim, new PropertyPath(TextBlock.FontSizeProperty));
+
+					// Start storyboard
+					storyboard.Begin(this, true);
+				}
 
 			}
 		}
@@ -92,10 +127,43 @@ namespace WhoIsOnDeck
 		private void GetNewStudentsOnDeck()
 		{
 			// Fill all three labels with new random students
-			string[] studentsOnDeck = Sorter.GetStudentsOnDeck();
-			StudentOne.Text = studentsOnDeck[0];
-			StudentTwo.Text = studentsOnDeck[1];
-			StudentThree.Text = studentsOnDeck[2];
+			Student[] studentsOnDeck = Sorter.GetStudentsOnDeck();
+
+			// Set names
+			StudentNameOne.Text = studentsOnDeck[0].name;
+			StudentNameTwo.Text = studentsOnDeck[1].name;
+			StudentNameThree.Text = studentsOnDeck[2].name;
+
+			// Set images
+			SetImageFromJob(StudentImageOne, studentsOnDeck[0].job);
+			SetImageFromJob(StudentImageTwo, studentsOnDeck[1].job);
+			SetImageFromJob(StudentImageThree, studentsOnDeck[2].job);
+
+			// Set class
+			StudentLevelOne.Text = "Lv " + studentsOnDeck[0].level + " " + CapitalizeFirstLetter(studentsOnDeck[0].job);
+			StudentLevelTwo.Text = "Lv " + studentsOnDeck[1].level + " " + CapitalizeFirstLetter(studentsOnDeck[1].job);
+			StudentLevelThree.Text = "Lv " + studentsOnDeck[2].level + " " + CapitalizeFirstLetter(studentsOnDeck[2].job);
+
+			// Set xp
+			StudentXPOne.Text = "XP " + studentsOnDeck[0].xp + " / " + studentsOnDeck[0].XpToNextLevel();
+			StudentXPTwo.Text = "XP " + studentsOnDeck[1].xp + " / " + studentsOnDeck[1].XpToNextLevel();
+			StudentXPThree.Text = "XP " + studentsOnDeck[2].xp + " / " + studentsOnDeck[2].XpToNextLevel();
+		}
+
+
+		private string CapitalizeFirstLetter(string s)
+		{
+			return char.ToUpper(s[0]) + s.Substring(1);
+		}
+		private void SetImageFromJob(Image img, string job)
+		{
+			if (Student.IsJobApproved(job)) {
+				img.Source = new BitmapImage(new Uri("Images/" + job + ".png", UriKind.Relative));
+			}
+			else
+			{
+				img.Source = new BitmapImage(new Uri("Images/jester.png", UriKind.Relative));
+			}
 		}
 
 		private void NewSetButtonMouseDown(object sender, RoutedEventArgs e)

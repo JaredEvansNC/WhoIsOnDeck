@@ -4,14 +4,39 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WhoIsOnDeck"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="250" Width="400">
+		mc:Ignorable="d"
+        Title="MainWindow" Height="400" Width="600">
 	<Grid>
-		<Label Content="Who is on deck?" HorizontalAlignment="Center" Margin="0,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" Width="400" HorizontalContentAlignment="Center" FontSize="16" FontWeight="ExtraBold"/>
-		<Button Content="NEW SET" HorizontalAlignment="Center" Margin="0,0,0,25" VerticalAlignment="Bottom" Click="NewSetButtonMouseDown"/>
-		<TextBlock Name="ErrorBlock" HorizontalAlignment="Center" Margin="0,0,0,0" Text="" TextWrapping="Wrap" VerticalAlignment="Center" TextAlignment="Center" Foreground="Red" Width="350"/>
-		<TextBlock Name="StudentOne" Text=""  TextAlignment="Center" HorizontalAlignment="Center" Margin="-200,60,0,0" VerticalAlignment="Top" Width="200" Height="30" TextWrapping="Wrap" MouseDown="StudentNameMouseDown" FontWeight="Bold" FontSize="12"/>
-		<TextBlock Name="StudentTwo" Text=""  TextAlignment="Center" HorizontalAlignment="Center" Margin="200,60,0,0" VerticalAlignment="Top" Width="200" Height="30" TextWrapping="Wrap" MouseDown="StudentNameMouseDown" FontWeight="Bold" FontSize="12"/>
-		<TextBlock Name="StudentThree" Text=""  TextAlignment="Center" HorizontalAlignment="Center" Margin="0,90,0,0" VerticalAlignment="Top" Width="200" Height="30" TextWrapping="Wrap" MouseDown="StudentNameMouseDown" FontWeight="Bold" FontSize="12" />
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="1*"></ColumnDefinition>
+			<ColumnDefinition Width="1*"></ColumnDefinition>
+			<ColumnDefinition Width="1*"></ColumnDefinition>
+		</Grid.ColumnDefinitions>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="1*"></RowDefinition>
+			<RowDefinition Height="3*"></RowDefinition>
+			<RowDefinition Height="1*"></RowDefinition>
+		</Grid.RowDefinitions>
+		<Label Grid.Row="0" Grid.ColumnSpan="3" Content="QUESTION QUEST" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" Width="400" HorizontalContentAlignment="Center" FontSize="16" FontWeight="ExtraBold"/>
+		<Button Grid.Row="2" Grid.ColumnSpan="3" Content="NEW PARTY" HorizontalAlignment="Center" Margin="0,0,0,25" VerticalAlignment="Bottom" Click="NewSetButtonMouseDown"/>
+		<TextBlock Grid.Row="1"  Grid.ColumnSpan="3" Name="ErrorBlock" HorizontalAlignment="Center" Margin="0,0,0,0" Text="" TextWrapping="Wrap" VerticalAlignment="Center" TextAlignment="Center" Foreground="Red" Width="350"/>
+		<StackPanel Grid.Row ="1" Grid.Column="0" Name="StudentOne" MouseDown="StudentNameMouseDown" Margin="0,0,0,0">
+			<TextBlock Name="StudentNameOne" Text=""  TextAlignment="Center" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Top" Width="200" Height="30" TextWrapping="Wrap" FontWeight="Bold" FontSize="14"/>
+			<Image Name="StudentImageOne" Width="200" Height="120" Stretch="Uniform" HorizontalAlignment="Center" Source=""/>
+			<TextBlock Name="StudentLevelOne" Text=""  TextAlignment="Center" HorizontalAlignment="Center" Margin="0,10,0,0" VerticalAlignment="Top" Width="200" Height="30" TextWrapping="Wrap" FontWeight="Bold" FontSize="16"/>
+			<TextBlock Name="StudentXPOne" Text=""  TextAlignment="Center" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Top" Width="200" Height="30" TextWrapping="Wrap" FontWeight="Bold" FontSize="14"/>
+		</StackPanel>
+		<StackPanel Grid.Row ="1" Grid.Column="1" Name="StudentTwo" MouseDown="StudentNameMouseDown" Margin="0,0,0,0">
+			<TextBlock Name="StudentNameTwo" Text=""  TextAlignment="Center" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Top" Width="200" Height="30" TextWrapping="Wrap" FontWeight="Bold" FontSize="14"/>
+			<Image Name="StudentImageTwo" Width="200" Height="120" Stretch="Uniform" HorizontalAlignment="Center" Source="" />
+			<TextBlock Name="StudentLevelTwo" Text=""  TextAlignment="Center" HorizontalAlignment="Center" Margin="0,10,0,0" VerticalAlignment="Top" Width="200" Height="30" TextWrapping="Wrap" FontWeight="Bold" FontSize="16"/>
+			<TextBlock Name="StudentXPTwo" Text=""  TextAlignment="Center" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Top" Width="200" Height="30" TextWrapping="Wrap" FontWeight="Bold" FontSize="14"/>
+		</StackPanel>
+		<StackPanel Grid.Row ="1" Grid.Column="2" Name="StudentThree" MouseDown="StudentNameMouseDown" Margin="0,0,0,0">
+			<TextBlock Name="StudentNameThree" Text=""  TextAlignment="Center" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Top" Width="200" Height="30" TextWrapping="Wrap" FontWeight="Bold" FontSize="14"/>
+			<Image Name="StudentImageThree" Width="200" Height="120" Stretch="Uniform" HorizontalAlignment="Center" Source="" />
+			<TextBlock Name="StudentLevelThree" Text=""  TextAlignment="Center" HorizontalAlignment="Center" Margin="0,10,0,0" VerticalAlignment="Top" Width="200" Height="30" TextWrapping="Wrap" FontWeight="Bold" FontSize="16"/>
+			<TextBlock Name="StudentXPThree" Text=""  TextAlignment="Center" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Top" Width="200" Height="30" TextWrapping="Wrap" FontWeight="Bold" FontSize="14"/>
+		</StackPanel>
 	</Grid>
 </Window>

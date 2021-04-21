@@ -2,32 +2,44 @@
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
+using WhoIsOnDeck.Models;
 
 namespace WhoIsOnDeck
 {
 	public class StudentSorter
 	{
 		// Students available to be shown
-		private List<string> UnusedStudents;
+		private List<Student> UnusedStudents;
 		// During the sorting process, is used to store the students who were just on deck
 		// If needed, will be used to ensure there are enough students to display
-		private List<string> PrevOnDeckStudents = new List<string>();
+		private List<Student> PrevOnDeckStudents = new List<Student>();
 		// Students who have already answered a question, shuffled back into unused when unused is too low
-		private List<string> UsedStudents = new List<string>();
+		private List<Student> UsedStudents = new List<Student>();
 		// The current set of on0deck students
-		private List<string> StudentsOnDeck = new List<string>();
+		private List<Student> StudentsOnDeck = new List<Student>();
 
 		public StudentSorter(string nameFilePath) 
 		{
 			// Read names from file in same directory
 			// Put in unused students list
 			string allNames = File.ReadAllText(nameFilePath);
-			UnusedStudents = new List<string>(allNames.Split(','));
+			string[] rawStrings = allNames.Split(',');
+
+			UnusedStudents = new List<Student>();
+
+			// Generate new students based on strings
+			// Add them to the Unused Students list
+			foreach (string s in rawStrings)
+			{
+				string[] data = s.Split(':');
+				UnusedStudents.Add(new Student(data[0], data[1], Int32.Parse(data[2]), Int32.Parse(data[3])));
+			}
+			
 
 		}
 
 		// Returns an array containing a new set of on-deck students, chosen randomly
-		public string[] GetStudentsOnDeck()
+		public Student[] GetStudentsOnDeck()
 		{
 			// Store who was on deck, then clear it out
 			PrevOnDeckStudents.Clear();
@@ -49,7 +61,7 @@ namespace WhoIsOnDeck
 		}
 
 		// Get's a random student from the unused students list
-		private string GetRandomUnusedStudent()
+		private Student GetRandomUnusedStudent()
 		{
 			// Refill the unused students list if we run out
 			if (UnusedStudents.Count <= 0)
@@ -69,19 +81,31 @@ namespace WhoIsOnDeck
 			// Get a random unused student
 			int randIndex = new Random().Next(0, UnusedStudents.Count);
 			// Store student name
-			string studentName = UnusedStudents[randIndex];
+			Student student = UnusedStudents[randIndex];
 			// Remove from the Unused list
-			UnusedStudents.Remove(studentName);
+			UnusedStudents.Remove(student);
 			// Return the name at that index
-			return studentName;
+			return student;
 			
 		}
 
 		// Called to mark a student's name as used when the answer a question
-		public void MarkNameAsUsed(string name)
+		public void MarkStudentAsUsed(Student student)
 		{
-			StudentsOnDeck.Remove(name);
-			UsedStudents.Add(name);
+			StudentsOnDeck.Remove(student);
+			UsedStudents.Add(student);
+		}
+	
+		public Student FindOnDeckStudentByName(string name)
+		{
+			foreach(Student s in StudentsOnDeck) {
+				if(s.name.Equals(name))
+				{
+					return s;
+				}
+			}
+
+			return null;
 		}
 	}
 }
