@@ -27,6 +27,8 @@ namespace WhoIsOnDeck
 
 		private Storyboard storyboard = new Storyboard();
 
+		private const string namesFilePath = ".\\classnames.txt";
+
 		public MainWindow()
 		{
 			InitializeComponent();
@@ -34,7 +36,7 @@ namespace WhoIsOnDeck
 			// Try to create a new sorter object, if there are any IO exceptions, print out an error message
 			try
 			{
-				Sorter = new StudentSorter(".\\classnames.txt");
+				Sorter = new StudentSorter(namesFilePath);
 			}
 			catch(IOException e)
 			{
@@ -111,7 +113,10 @@ namespace WhoIsOnDeck
 						Sorter.MarkStudentAsUsed(student);
 					}
 
+					// Start saving all the student data
+					Sorter.SaveAllStudentData(namesFilePath);
 
+					// Setup variables for animation
 					string tbToAnimate = xp.Name;
 					double startSize = 14.0;
 

@@ -17,6 +17,8 @@ namespace WhoIsOnDeck
 		private List<Student> UsedStudents = new List<Student>();
 		// The current set of on0deck students
 		private List<Student> StudentsOnDeck = new List<Student>();
+		// Has references to all students for purposes of saving data
+		private List<Student> AllStudents = new List<Student>();
 
 		public StudentSorter(string nameFilePath) 
 		{
@@ -32,7 +34,9 @@ namespace WhoIsOnDeck
 			foreach (string s in rawStrings)
 			{
 				string[] data = s.Split(':');
-				UnusedStudents.Add(new Student(data[0], data[1], Int32.Parse(data[2]), Int32.Parse(data[3])));
+				Student student = new Student(data[0], data[1], Int32.Parse(data[2]), Int32.Parse(data[3]));
+				UnusedStudents.Add(student);
+				AllStudents.Add(student);
 			}
 			
 
@@ -106,6 +110,23 @@ namespace WhoIsOnDeck
 			}
 
 			return null;
+		}
+
+		public void SaveAllStudentData(string nameFilePath)
+		{
+			string studentData = "";
+
+			foreach(Student s in AllStudents)
+			{
+				studentData += s.ToString() + ",";
+			}
+
+			if (!studentData.Equals("")) {
+				// Take of the last comma
+				studentData = studentData.TrimEnd(',');
+				File.WriteAllText(nameFilePath, studentData);
+			}
+			
 		}
 	}
 }
