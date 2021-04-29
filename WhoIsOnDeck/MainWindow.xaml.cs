@@ -137,8 +137,10 @@ namespace WhoIsOnDeck
 					panelAnim.AutoReverse = true;
 					panelAnim.Completed += (s, e) =>
 					{
+						// TODO - Don't reset all students after xp gain
 						// Get a new set of students on anim completion
-						GetNewStudentsOnDeck();
+						// 4.29 Commented out so that multiple students can gain xp
+						//GetNewStudentsOnDeck();
 					};
 
 
